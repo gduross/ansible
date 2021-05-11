@@ -3,9 +3,17 @@
   hosts: junosdevices2
   gather_facts: no
 
+
+  vars:
+      #my_version: "{{ version }}"
+      #my_other_variable: "{{ other_variable }}"
+      #action: "{{ action }}"
+
   tasks:
 
     - name: add a router filter to a router config.
       junipernetworks.junos.junos_config:
         lines:
-        - set groups vpn666 policy-options policy-statement VPN666 from route-filter 10.0.50.0/24 orlonger accept
+        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.50.0/24 orlonger "
+        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.51.0/24 orlonger "
+        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.52.0/24 orlonger "
