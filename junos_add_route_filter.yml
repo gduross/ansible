@@ -1,19 +1,29 @@
 ---
-- name: add route filter to a router config.
+- name: add or remove route filters to a router config.
   hosts: junosdevices2
   gather_facts: no
 
-
-  vars:
-      #my_version: "{{ version }}"
-      #my_other_variable: "{{ other_variable }}"
-      #action: "{{ action }}"
-
   tasks:
 
-    - name: add a router filter to a router config.
+    #- name: add a router filter to a router config.
+    #  junipernetworks.junos.junos_config:
+    #    #loop: "{{ device_list }}"
+    #    #loop_var: device_name
+        #lines:
+        #- " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.50.0/24 orlonger "
+        #- " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.51.0/24 orlonger "
+        #- " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.52.0/24 orlonger "
+        #- "{{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter {{ device_name }} orlonger "
+
+   # show all the hosts in the inventory
+   # - debug:
+   #    msg: "{{ item }}"
+   #   loop: "{{ device_list }}"
+
+    - name: 3rd attempt
       junipernetworks.junos.junos_config:
         lines:
-        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.50.0/24 orlonger "
-        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.51.0/24 orlonger "
-        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter 10.0.52.0/24 orlonger "
+        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter {{ item }} orlonger "
+      loop: "{{ device_list }}"
+      loop_control:
+         loop_var: item
