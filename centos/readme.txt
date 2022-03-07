@@ -1,1 +1,1 @@
-placeholder
+CentOS playbooks for Ansible.
