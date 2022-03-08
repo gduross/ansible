@@ -1,0 +1,14 @@
+---
+- name: Syslog Configuration
+  hosts: csr1000vlab01
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+
+    - name: configure logging for syslog server host
+      ios_logging:
+        dest: host
+        name: 10.0.0.208
+        level: informational
+        state: present

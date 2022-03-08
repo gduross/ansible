@@ -1,0 +1,37 @@
+---
+- name: Changes to csr1
+  hosts: csr1000vlab01
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: Gather only the config and default facts
+      ios_facts:
+        gather_subset:
+          - config
+
+    - set_fact: avcode=221
+
+
+    - name: configure top level configuration
+      ios_config:
+        lines:
+          - vrf definition act{{ avcode }}
+          - description act{{ avcode }}_vlan{{ avcode }}_ip10.{{ avcode }}.0.0/24
+          - address-family ipv4
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - encapsulation dot1Q {{ avcode }}
+          - ip address 10.{{ avcode }}.0.2 255.255.255.0
+          - vrf forwarding act{{ avcode }}
+          - vrrp {{ avcode }} ip 10.{{ avcode }}.0.1
+        parents: interface GigabitEthernet3.{{ avcode }}
+    - name: Merge provided configuration with device configuration
+      ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet3.{{ avcode }}
+            ipv4:
+            - address: 10.{{ avcode }}.0.2/24
+        state: merged

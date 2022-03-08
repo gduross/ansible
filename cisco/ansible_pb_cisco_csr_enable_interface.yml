@@ -1,0 +1,9 @@
+---
+- hosts: csr1000vlab01
+  gather_facts: no
+
+  tasks:
+  - name: configure interface
+    ios_interface:
+      name: GigabitEthernet4
+      enabled: true
