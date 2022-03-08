@@ -1,0 +1,44 @@
+---
+- name: Changes to csr1
+  hosts: thirdlab
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: configure top level configuration
+      ios_config:
+        lines:
+          - vrf definition act202
+          - description act202_vlan202_ip10.202.0.0/24
+          - address-family ipv4
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - encapsulation dot1Q 202
+          - ip address 10.202.0.2 255.255.255.0
+          - vrf forwarding act202
+          - vrrp 202 ip 10.202.0.1
+        parents: interface GigabitEthernet3.202
+
+- name: Changes to csr2
+  hosts: csr2
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: configure top level configuration
+      ios_config:
+        lines:
+          - vrf definition act202
+          - description act202_vlan202_ip10.202.0.0/24
+          - address-family ipv4
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - encapsulation dot1Q 202
+          - ip address 10.202.0.3 255.255.255.0
+          - vrf forwarding act202
+          - vrrp 202 ip 10.202.0.1
+        parents: interface GigabitEthernet3.202

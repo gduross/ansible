@@ -1,0 +1,14 @@
+---
+- name: Add Vlans to switch pair.
+  hosts: switches
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: Merge provided configuration with device configuration
+      ios_vlans:
+        config:
+        - name: Vlan_216
+          vlan_id: 216
+          state: active
+          shutdown: disabled

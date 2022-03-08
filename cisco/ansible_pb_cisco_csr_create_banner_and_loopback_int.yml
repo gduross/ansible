@@ -1,0 +1,15 @@
+---
+- name: General Config
+  hosts: csr1000vlab01
+  tasks:
+  - name: Add Banner
+    ios_banner:
+      banner: login
+      text: |
+        Nicolas Cage is the
+        Tiger King
+      state: present
+  - name: Add loopback
+    ios_interface:
+      name: Loopback21
+      state: present

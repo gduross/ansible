@@ -1,0 +1,16 @@
+---
+- name: Add VRF, VRRP, ENCAP info to interface.
+  hosts: csr1000vlab01
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - encapsulation dot1Q 202
+          - ip address 10.202.0.2 255.255.255.0
+          - vrf forwarding act202
+          - vrrp 202 ip 10.202.0.1
+        parents: interface GigabitEthernet2.202
