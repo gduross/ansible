@@ -1,0 +1,13 @@
+---
+- name: test_play_book
+  hosts: csr1000vlab01
+  gather_facts: no
+
+  tasks:
+    - name: run show version on remote devices
+      cisco.ios.ios_command:
+         commands: show version
+      register: show_version
+    - debug:
+        var: show_version
+

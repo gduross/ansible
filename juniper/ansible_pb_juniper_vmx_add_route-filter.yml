@@ -1,0 +1,11 @@
+---
+- name: add route filter to a router config.
+  hosts: junosdevices2
+  gather_facts: no
+
+  tasks:
+
+    - name: add a router filter to a router config.
+      junipernetworks.junos.junos_config:
+        lines:
+        - set groups vpn666 policy-options policy-statement VPN666 from route-filter 10.0.50.0/24 orlonger accept
