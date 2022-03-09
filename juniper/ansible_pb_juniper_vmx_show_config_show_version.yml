@@ -1,0 +1,31 @@
+---
+- name: "Load and commit configuration"
+  hosts: junosdevices
+  connection: local
+  gather_facts: no
+
+  tasks:
+
+   - name: collect default set of facts and configuration
+     junipernetworks.junos.junos_facts:
+       gather_subset: config
+     register: result
+   #- debug:
+   #    var: result
+   
+   - name: run show version on remote devices
+     junipernetworks.junos.junos_command:
+       commands: show version
+     register: result
+   - debug:
+       var: result
+
+   - name: run show config on remote devices
+     junipernetworks.junos.junos_command:
+       commands: show configuration
+     register: result
+   - debug:
+       var: result
+
+
+
