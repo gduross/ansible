@@ -1,0 +1,16 @@
+---
+- name: show version and other user level commands
+  hosts: 10.0.30.40
+  gather_facts: no
+  connection: local
+  
+  tasks:
+   - name: run show version and show interfaces on remote devices
+     junipernetworks.junos.junos_command:
+       commands: show version, show interfaces
+
+     register: print_output
+
+   - name: Print version
+     debug:
+        var=print_output.stdout_lines

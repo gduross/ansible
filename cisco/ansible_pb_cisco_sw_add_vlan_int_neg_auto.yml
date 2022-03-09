@@ -1,0 +1,26 @@
+---
+- name: Customer add to switch pair.
+  hosts: 10.0.30.15
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - set_fact: vlan_name=Vlan_115
+    - set_fact: avcode=115
+    - set_fact: dsivar=3
+    - name: Remove Negotiation Auto from access interface.
+      ios_config:
+        lines:
+          - interface gi0/{{dsivar}}
+          - negotiation auto
+
+    - name: Add customer vlan to database.
+      ios_vlans:
+        config:
+          - name: "{{ vlan_name }}"
+            vlan_id: "{{ avcode }}"
+            state: active
+            shutdown: disabled
+        state: merged
+
+
