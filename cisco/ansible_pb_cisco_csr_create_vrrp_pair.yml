@@ -1,44 +1,41 @@
 ---
-- name: Changes to csr1
-  hosts: thirdlab
+- name: Deploy New Customer to CSR Pair
+  hosts: csr1000vlab01
   connection: network_cli
   gather_facts: no
 
   tasks:
+    - set_fact: avcode=215
+
+    - name: Gather only the config and default facts
+      ios_facts:
+        gather_subset:
+          - config
+
+    - set_fact:
+         one_fact: "{{ 2 if ansible_net_hostname.startswith('csr1') else 3 }}"
+
     - name: configure top level configuration
       ios_config:
         lines:
-          - vrf definition act202
-          - description act202_vlan202_ip10.202.0.0/24
+          - vrf definition act{{ avcode }}
+          - description act{{ avcode }}_vlan{{ avcode }}_ip10.{{ avcode }}.0.0/24
           - address-family ipv4
+
     - name: configure interface settings
       ios_config:
         lines:
           - description test interface
-          - encapsulation dot1Q 202
-          - ip address 10.202.0.2 255.255.255.0
-          - vrf forwarding act202
-          - vrrp 202 ip 10.202.0.1
-        parents: interface GigabitEthernet3.202
+          - encapsulation dot1Q {{ avcode }}
+          - ip address 10.{{ avcode }}.0.2 255.255.255.0
+          - vrf forwarding act{{ avcode }}
+          - vrrp {{ avcode }} ip 10.{{ avcode }}.0.1
+        parents: interface GigabitEthernet2.{{ avcode }}
 
-- name: Changes to csr2
-  hosts: csr2
-  connection: network_cli
-  gather_facts: no
-
-  tasks:
-    - name: configure top level configuration
-      ios_config:
-        lines:
-          - vrf definition act202
-          - description act202_vlan202_ip10.202.0.0/24
-          - address-family ipv4
-    - name: configure interface settings
-      ios_config:
-        lines:
-          - description test interface
-          - encapsulation dot1Q 202
-          - ip address 10.202.0.3 255.255.255.0
-          - vrf forwarding act202
-          - vrrp 202 ip 10.202.0.1
-        parents: interface GigabitEthernet3.202
+    - name: Merge provided configuration with device configuration
+      ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet2.{{ avcode }}
+            ipv4:
+            - address: 10.{{ avcode }}.0.{{one_fact}}/24
+        state: merged
