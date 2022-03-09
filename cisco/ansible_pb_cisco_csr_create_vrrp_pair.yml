@@ -13,13 +13,13 @@
           - config
 
     - set_fact:
-         one_fact: "{{ 2 if ansible_net_hostname.startswith('csr1') else 3 }}"
+         one_fact: "{{ 2 if ansible_net_hostname.endswith('ir01') else 3 }}"
 
     - name: configure top level configuration
       ios_config:
         lines:
           - vrf definition act{{ avcode }}
-          - description act{{ avcode }}_vlan{{ avcode }}_ip10.{{ avcode }}.0.0/24
+          - description act{{ avcode }}_vlan{{ avcode }}_ip10.{{ avcode }}.0.0/29
           - address-family ipv4
 
     - name: configure interface settings
@@ -27,7 +27,7 @@
         lines:
           - description test interface
           - encapsulation dot1Q {{ avcode }}
-          - ip address 10.{{ avcode }}.0.2 255.255.255.0
+          - ip address 10.{{ avcode }}.0.2 255.255.255.248
           - vrf forwarding act{{ avcode }}
           - vrrp {{ avcode }} ip 10.{{ avcode }}.0.1
         parents: interface GigabitEthernet2.{{ avcode }}
@@ -35,7 +35,7 @@
     - name: Merge provided configuration with device configuration
       ios_l3_interfaces:
         config:
-          - name: GigabitEthernet2.{{ avcode }}
+          - name: GigabitEthernet1.{{ avcode }}
             ipv4:
-            - address: 10.{{ avcode }}.0.{{one_fact}}/24
+            - address: 10.{{ avcode }}.0.{{one_fact}}/29
         state: merged
