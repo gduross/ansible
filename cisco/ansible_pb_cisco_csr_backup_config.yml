@@ -1,0 +1,13 @@
+---
+- name: BACKUP ROUTER CONFIGURATIONS
+  hosts: csr1000vlab01
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - name: BACKUP THE CONFIG
+      nxos_config:
+        backup: yes
+        backup_options:
+          filename: "{{ ansible_host }}.cfg"
+          dir_path: /home/ansible/backup
