@@ -1,6 +1,6 @@
 ---
 - name: Deploy New Customer to CSR Pair
-  hosts: csr1000vlab01
+  hosts: msp01
   connection: network_cli
   gather_facts: no
 
@@ -30,12 +30,12 @@
           - ip address 10.{{ avcode }}.0.2 255.255.255.248
           - vrf forwarding act{{ avcode }}
           - vrrp {{ avcode }} ip 10.{{ avcode }}.0.1
-        parents: interface GigabitEthernet2.{{ avcode }}
+        parents: interface GigabitEthernet4.{{ avcode }}
 
     - name: Merge provided configuration with device configuration
       ios_l3_interfaces:
         config:
-          - name: GigabitEthernet1.{{ avcode }}
+          - name: GigabitEthernet4.{{ avcode }}
             ipv4:
             - address: 10.{{ avcode }}.0.{{one_fact}}/29
         state: merged
