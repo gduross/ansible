@@ -1,0 +1,23 @@
+---
+- name: Get Fortigate user group information
+  hosts: fortigate
+  connection: httpapi
+  collections:
+  - fortinet.fortios
+  vars:
+   vdom: "root"
+   ansible_httpapi_use_ssl: no
+   ansible_httpapi_validate_certs: no
+   ansible_httpapi_port: 443
+  tasks:
+
+  - name: Get user group info
+    fortios_configuration_fact:
+      vdom: ""
+      selector: user_group
+
+    register: user_group
+  - name: Show user group info
+    debug:
+      var: user_group
+

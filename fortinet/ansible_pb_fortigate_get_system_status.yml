@@ -1,4 +1,6 @@
-- hosts: fortigate
+---
+- name: Get Fortigate system status information.
+  hosts: fortigate
   connection: httpapi
   collections:
   - fortinet.fortios
@@ -9,7 +11,8 @@
    ansible_httpapi_port: 443
   tasks:
 
-  - fortios_monitor_fact:
+  - name: Get system status
+    fortios_monitor_fact:
        vdom: ""
        formatters:
             - model_name
@@ -18,6 +21,8 @@
        selector: 'system_status'
 
     register: system_status
-  - debug:
+
+  - name: Show system status
+    debug:
       var: system_status
 
