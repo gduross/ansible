@@ -1,1 +1,4 @@
-created fortinet folder
+This is a collection of Ansible playbooks for use with Fortigate devices.
+
+Reference:
+https://docs.ansible.com/ansible/latest/collections/fortinet/fortios/fortios_configuration_fact_module.html
