@@ -1,0 +1,33 @@
+- collections:
+  - fortinet.fortios
+  connection: httpapi
+  hosts: fortigate
+  vars:
+    ansible_httpapi_port: 443
+    ansible_httpapi_use_ssl: false
+    ansible_httpapi_validate_certs: false
+    vdom: root
+  tasks:
+  - name: fortios_firewall_interface_policy
+    fortios_firewall_interface_policy:
+      vdom: root
+      state: present
+      firewall_interface_policy:
+        address_type: ipv4
+        application_list_status: disable
+        av_profile_status: disable
+        dlp_sensor_status: disable
+        dsri: disable
+        dstaddr:
+        - name: all
+        emailfilter_profile_status: disable
+        interface: port1
+        ips_sensor_status: disable
+        logtraffic: all
+        policyid: 21
+        service:
+        - name: ALL
+        srcaddr:
+        - name: all
+        status: enable
+        webfilter_profile_status: disable

@@ -1,0 +1,93 @@
+- collections:
+  - fortinet.fortios
+  connection: httpapi
+  hosts: fortigate
+  vars:
+    ansible_httpapi_port: 443
+    ansible_httpapi_use_ssl: false
+    ansible_httpapi_validate_certs: false
+    vdom: root
+  tasks:
+  - name: fortios_firewall_policy
+    fortios_firewall_policy:
+      vdom: root
+      state: present
+      firewall_policy:
+        action: accept
+        anti_replay: enable
+        auth_path: disable
+        auto_asic_offload: enable
+        block_notification: disable
+        captive_portal_exempt: disable
+        delay_tcp_npu_session: disable
+        diffserv_forward: disable
+        diffserv_reverse: disable
+        diffservcode_forward: '000000'
+        diffservcode_rev: '000000'
+        disclaimer: disable
+        dsri: disable
+        dstaddr:
+        - name: all
+        dstaddr_negate: disable
+        dstintf:
+        - name: port3
+        email_collect: disable
+        firewall_session_dirty: check-all
+        fixedport: disable
+        geoip_anycast: disable
+        geoip_match: physical-location
+        http_policy_redirect: disable
+        inbound: disable
+        inspection_mode: flow
+        internet_service: disable
+        internet_service_negate: disable
+        internet_service_src: disable
+        internet_service_src_negate: disable
+        ippool: disable
+        logtraffic: utm
+        logtraffic_start: disable
+        match_vip: disable
+        match_vip_only: disable
+        name: LAB_PRACTICE_POLICY_01
+        nat: enable
+        natinbound: disable
+        natip: 0.0.0.0 0.0.0.0
+        natoutbound: disable
+        ntlm: disable
+        ntlm_guest: disable
+        outbound: enable
+        permit_any_host: disable
+        permit_stun_host: disable
+        policyid: 1
+        profile_protocol_options: default
+        profile_type: single
+        radius_mac_auth_bypass: disable
+        reputation_direction: destination
+        reputation_minimum: 0
+        rtp_nat: disable
+        schedule: always
+        schedule_timeout: disable
+        send_deny_packet: disable
+        service:
+        - ALL
+        service_negate: disable
+        session_ttl: 0
+        srcaddr:
+        - name: all
+        srcaddr_negate: disable
+        srcintf:
+        - name: port4
+        ssh_policy_redirect: disable
+        ssl_ssh_profile: no-inspection
+        status: enable
+        tcp_mss_receiver: 0
+        tcp_mss_sender: 0
+        tcp_session_without_syn: disable
+        timeout_send_rst: disable
+        tos: '0x00'
+        tos_mask: '0x00'
+        tos_negate: disable
+        utm_status: disable
+        vlan_cos_fwd: 2
+        vlan_cos_rev: 2
+        wccp: disable
