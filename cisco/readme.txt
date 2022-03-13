@@ -1,8 +1,10 @@
-Cisco playbooks for Anisble
-TEst entry 3/7/2022 10:11
+Ansible playbooks for Cisco Devices.
 
-another add from the ansible server
+This is a collection of Ansible playbooks for various Cisco devices. 
 
-reply from github 3/7/2022 10:57
+Note the naming convention for the device model:
 
-response from ansible server 3/7/2022 10:58
+ansible_pb_cisco_asa = Cisco ASAv
+ansible_pb_cisco_csr = Cisco CSR1000v
+ansible_pb_cisco_sw = Cisco IOSvL2
+ 
