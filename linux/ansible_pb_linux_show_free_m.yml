@@ -1,0 +1,12 @@
+---
+- name: Get free memory from linux servers
+  hosts: lab_servers
+  tasks:
+  - name: Execute 'free -m'  using the shell module
+    shell: 'free -m'
+    register: results
+
+  - name: Display results of 'free -m'
+    debug:
+      var: results
+

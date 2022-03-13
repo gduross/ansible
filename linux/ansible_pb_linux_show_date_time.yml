@@ -1,0 +1,14 @@
+---
+  - name: Get free memory from linux servers.
+    hosts: lab_servers
+
+    tasks:
+
+    - name: Execute 'date' command using the shell module.
+      shell:
+         "date"
+      register: results
+      tags: results
+
+    - name: Display results of 'date' command.  
+      debug: msg="{{results.stdout}}"
