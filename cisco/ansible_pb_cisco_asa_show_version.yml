@@ -1,0 +1,16 @@
+---
+- name: Display show version results from Cisco ASA device.
+  hosts: ASA
+  gather_facts: no
+  
+  tasks:
+
+   - name: Get the ASA version
+     cisco.asa.asa_command:
+       commands:
+       - show version
+     register: results
+
+   - name: SHow the ASA version results
+     debug:
+       var: results
