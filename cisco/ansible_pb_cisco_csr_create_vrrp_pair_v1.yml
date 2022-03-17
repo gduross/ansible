@@ -5,7 +5,7 @@
   gather_facts: no
 
   tasks:
-    - set_fact: avcode=215
+    - set_fact: avcode=203
 
     - name: Gather only the config and default facts
       ios_facts:

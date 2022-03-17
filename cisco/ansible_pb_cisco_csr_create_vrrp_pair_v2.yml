@@ -1,0 +1,41 @@
+---
+- name: Deploy New Customer to CSR Pair
+  hosts: msp01
+  connection: network_cli
+  gather_facts: no
+
+  tasks:
+    - set_fact: avcode=203
+
+    - name: Gather only the config and default facts
+      ios_facts:
+        gather_subset:
+          - config
+
+    - set_fact:
+         one_fact: "{{ 2 if ansible_net_hostname.endswith('ir01') else 3 }}"
+
+    - name: configure top level configuration
+      ios_config:
+        lines:
+          - vrf definition act{{ avcode }}
+          - description act{{ avcode }}_vlan{{ avcode }}_ip10.0.{{ avcode }}.0/29
+          - address-family ipv4
+
+    - name: configure interface settings
+      ios_config:
+        lines:
+          - description test interface
+          - encapsulation dot1Q {{ avcode }}
+          - ip address 10.{{ avcode }}.0.2 255.255.255.248
+          - vrf forwarding act{{ avcode }}
+          - vrrp {{ avcode }} ip 10.0.{{ avcode }}.1
+        parents: interface GigabitEthernet4.{{ avcode }}
+
+    - name: Merge provided configuration with device configuration
+      ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet4.{{ avcode }}
+            ipv4:
+            - address: 10.0.{{ avcode }}.{{one_fact}}/29
+        state: merged
