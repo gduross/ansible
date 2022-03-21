@@ -1,11 +1,11 @@
 ---
 - name: Deploy New Customer to CSR Pair
-  hosts: msp01
+  hosts: "{{ variable_host }}"
   connection: network_cli
   gather_facts: no
 
   tasks:
-    - set_fact: avcode=203
+    - set_fact: custid
 
     - name: Gather only the config and default facts
       ios_facts:
@@ -18,24 +18,24 @@
     - name: configure top level configuration
       ios_config:
         lines:
-          - vrf definition act{{ avcode }}
-          - description act{{ avcode }}_vlan{{ avcode }}_ip10.0.{{ avcode }}.0/29
+          - vrf definition act{{ custid }}
+          - description act{{ custid }}_vlan{{ custid }}_ip10.0.{{ custid }}.0/29
           - address-family ipv4
 
     - name: configure interface settings
       ios_config:
         lines:
           - description test interface
-          - encapsulation dot1Q {{ avcode }}
-          - ip address 10.{{ avcode }}.0.2 255.255.255.248
-          - vrf forwarding act{{ avcode }}
-          - vrrp {{ avcode }} ip 10.0.{{ avcode }}.1
-        parents: interface GigabitEthernet4.{{ avcode }}
+          - encapsulation dot1Q {{ custid }}
+          - ip address 10.{{ custid }}.0.2 255.255.255.248
+          - vrf forwarding act{{ custid }}
+          - vrrp {{ custid }} ip 10.0.{{ custid }}.1
+        parents: interface GigabitEthernet4.{{ custid }}
 
     - name: Merge provided configuration with device configuration
       ios_l3_interfaces:
         config:
-          - name: GigabitEthernet4.{{ avcode }}
+          - name: GigabitEthernet4.{{ custid }}
             ipv4:
-            - address: 10.0.{{ avcode }}.{{one_fact}}/29
+            - address: 10.0.{{ custid }}.{{one_fact}}/29
         state: merged
