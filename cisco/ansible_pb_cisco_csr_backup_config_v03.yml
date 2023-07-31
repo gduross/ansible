@@ -1,0 +1,23 @@
+---
+- name: BACKUP ROUTER CONFIGURATIONS
+  hosts: cisco_sandbox_csr
+  connection: network_cli
+  gather_facts: no
+
+  vars:
+      date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+      date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+  tasks:
+    - name: Create Directory
+      file:
+        path: "/etc/ansible/backups/{{ date }}"
+        state: directory
+
+    - name: BACKUP THE CONFIG
+      nxos_config:
+        backup: yes
+        backup_options:
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+          dir_path: /etc/ansible/backups/{{ date }}
+
