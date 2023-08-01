@@ -3,6 +3,9 @@
   hosts: "{{ nodes }}"
   gather_facts: no
 
+  vars:
+    ansible_password: "{{ password }}"
+
   tasks:
     - name: run show version on remote devices
       cisco.ios.ios_command:
