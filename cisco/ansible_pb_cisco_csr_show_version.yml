@@ -1,6 +1,6 @@
 ---
 - name: test_play_book
-  hosts: csr1000vlab01
+  hosts: "{{ nodes }}"
   gather_facts: no
 
   tasks:
