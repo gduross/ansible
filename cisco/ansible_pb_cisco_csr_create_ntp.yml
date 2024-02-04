@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 - name: test_play_book
   hosts: csr
@@ -18,3 +19,6 @@
         server: 10.1.1.20
         logging: false
         auth: false
+=======
+
+>>>>>>> 4ded704dd47cc1833982e679c2caa1385297d2f6

@@ -1,0 +1,12 @@
+---
+- name: Create NTP Configs
+  hosts: csr
+  gather_facts: no
+
+  tasks:
+    - name: configure ntp
+      ios_ntp:
+        server: pool.ntp.org
+        logging: false
+        auth: false
+        state: present
