@@ -1,0 +1,20 @@
+---
+- name: test_play_book
+  hosts: csr
+  gather_facts: no
+
+  vars:
+    ansible_password2: "{{ password }}"
+
+  tasks:
+    - name: run show version on remote devices
+      cisco.ios.ios_command:
+         commands: show version
+      register: show_version
+    - debug:
+        var: show_version
+    - name: configure ntp
+      ios_ntp:
+        server: 10.1.1.20
+        logging: false
+        auth: false
