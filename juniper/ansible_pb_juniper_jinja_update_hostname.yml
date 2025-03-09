@@ -1,0 +1,17 @@
+- name: Change Juniper EX Switch Hostname
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Generate hostname configuration from template
+      template:
+        src: hostname.j2
+        dest: "/tmp/hostname_{{ inventory_hostname }}.conf"
+
+    - name: Apply hostname configuration to switch
+      juniper.device.config:
+        src: "/tmp/hostname_{{ inventory_hostname }}.conf"
+        format: text
+        load: merge
+        commit: true
+
