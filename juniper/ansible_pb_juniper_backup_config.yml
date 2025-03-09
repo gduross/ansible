@@ -1,0 +1,23 @@
+- name: Backup Junos Configuration
+  hosts: dc1
+  gather_facts: 'no'
+  connection: netconf
+
+  vars:
+      date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+      date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+
+
+  tasks:
+    - name: Create Directory
+      file:
+        path: "/etc/ansible/backups/{{ date }}"
+        state: directory
+
+
+    - name: Fetch Juniper Configuration
+      junipernetworks.junos.junos_config:
+        backup: yes
+        backup_options:
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+          dir_path: /etc/ansible/backups/{{ date }}
