@@ -1,6 +1,6 @@
 - name: Backup Junos Configuration
   hosts: dc1
-  gather_facts: 'no'
+  gather_facts: no
   connection: netconf
 
   vars:

@@ -1,6 +1,6 @@
 ---
 - name: "Load and commit configuration"
-  hosts: junosdevices
+  hosts: dc1
   connection: local
   gather_facts: no
 

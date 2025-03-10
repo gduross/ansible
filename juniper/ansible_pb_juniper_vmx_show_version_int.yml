@@ -1,6 +1,6 @@
 ---
 - name: show version and other user level commands
-  hosts: 10.0.30.40
+  hosts: dc1
   gather_facts: no
   connection: local
   

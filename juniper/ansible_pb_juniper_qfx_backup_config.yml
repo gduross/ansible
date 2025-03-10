@@ -1,22 +1,15 @@
 ---
 - name: "Get Junos OS configuration"
-  hosts: dc1
+  hosts: all
   gather_facts: no
+  connection: local
 
   tasks:
-    #- name: backup
-    #  junos_config:
-    #    src: '/config/juniper.conf.gz'
-    #    backup: true
-    #    comment: update config
-
     - name: Backup current switch config (junos)
       junipernetworks.junos.junos_config:
         backup: yes
         backup_options:
           dir_path: /var/tmp/backup
-          #backup_options:
-          #filename: backup.cfg
-          #dir_path: /home/user
       register: backup_junos_location
-      when: ansible_network_os == 'junipernetworks.junos.junos'
+        #when: ansible_network_os == 'junipernetworks.junos.junos'
+      when: ansible_network_os == 'junos'
