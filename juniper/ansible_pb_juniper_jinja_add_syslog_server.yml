@@ -15,4 +15,3 @@
         format: text
         load: merge
         commit: true
-

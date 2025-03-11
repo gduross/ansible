@@ -1,0 +1,16 @@
+---
+- name: Retrieve uptime from Juniper devices
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Run 'show system uptime' on Juniper devices
+      junos_command:
+        commands: "show system uptime"
+      register: uptime_output
+
+    - name: Display uptime information
+      debug:
+        msg: "{{ inventory_hostname }} uptime: {{ uptime_output.stdout[0] }}"
+
