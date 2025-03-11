@@ -1,0 +1,18 @@
+- name: Configure SNMP on Juniper Switches
+  hosts: all
+  gather_facts: no
+  connection: juniper.device.pyez
+
+  tasks:
+    - name: Generate SNMP configuration from template
+      template:
+        src: snmp_config.j2
+        dest: "/tmp/syslog_{{ inventory_hostname }}.conf"
+
+    - name: Apply SNMP configuration to switch
+      juniper.device.config:
+        src: "/tmp/syslog_{{ inventory_hostname }}.conf"
+        format: text
+        load: merge
+        commit: true
+
