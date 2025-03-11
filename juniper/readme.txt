@@ -1,6 +1,7 @@
 Useful Commands
 ----------------------------------------------
 ansible-playbook ansible_pb_juniper_backup_config.yml -i /etc/ansible/inventory01.yml
+ansible-playbook ansible_pb_juniper_vmx_show_version_int.yml -i /etc/ansible/inventory04.yml -l juniper_devices2 
 
 
 Useful Links
