@@ -1,8 +1,8 @@
 ---
 - name: show version and other user level commands
-  hosts: dc1
+  hosts: all
   gather_facts: no
-  connection: local
+  connection: netconf
   
   tasks:
    - name: run show version and show interfaces on remote devices

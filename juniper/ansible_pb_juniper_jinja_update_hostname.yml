@@ -1,11 +1,12 @@
 - name: Change Juniper EX Switch Hostname
   hosts: all
   gather_facts: no
+  connection: juniper.device.pyez
 
   tasks:
     - name: Generate hostname configuration from template
       template:
-        src: hostname.j2
+        src: hostname2.j2
         dest: "/tmp/hostname_{{ inventory_hostname }}.conf"
 
     - name: Apply hostname configuration to switch

@@ -1,7 +1,8 @@
 ---
 - name: add route filter to a router config.
-  hosts: junosdevices2
+  hosts: all
   gather_facts: no
+  connection: netconf
 
   tasks:
 

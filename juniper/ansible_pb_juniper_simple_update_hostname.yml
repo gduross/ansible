@@ -1,9 +1,11 @@
 - name: Change Juniper EX Switch Hostname
   hosts: all
   gather_facts: no
+  connection: netconf
+
   tasks:
     - name: Set hostname
       junos_config:
         lines:
-          - "set system host-name {{ new_hostname }}"
+          - "set system host-name {{ inventory_hostname }}"
 

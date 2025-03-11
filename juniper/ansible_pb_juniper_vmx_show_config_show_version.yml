@@ -1,7 +1,7 @@
 ---
 - name: "Load and commit configuration"
-  hosts: dc1
-  connection: local
+  hosts: all
+  connection: netconf
   gather_facts: no
 
   tasks:

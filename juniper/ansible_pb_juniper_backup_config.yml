@@ -1,5 +1,5 @@
 - name: Backup Junos Configuration
-  hosts: dc1
+  hosts: all
   gather_facts: no
   connection: netconf
 

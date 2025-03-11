@@ -1,6 +1,7 @@
 - name: Add superuser to Juniper Switches
   hosts: all
   gather_facts: no
+  connection: juniper.device.pyez
 
   tasks:
     - name: Generate superuser configuration from template

@@ -1,6 +1,7 @@
 - name: Configure Syslog Server on Juniper Switches
   hosts: all
   gather_facts: no
+  connection: juniper.device.pyez
 
   tasks:
     - name: Generate syslog configuration from template

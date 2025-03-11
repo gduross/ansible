@@ -1,0 +1,16 @@
+---
+- name: Save Rescue Configuration on Juniper Devices
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Save rescue configuration
+      junos_command:
+        commands:
+          - request system configuration rescue save
+      register: rescue_output
+
+    - name: Display output
+      debug:
+        var: rescue_output.stdout_lines
