@@ -1,0 +1,39 @@
+---
+- name: Retrieve Commit Information from Juniper Devices
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+
+    - name: Run commit command on Juniper devices
+      junos_command:
+        commands:
+          - "show system commit"
+      register: commit_output
+
+    - name: Display commit information line by line
+      debug:
+        msg: |
+          Device: {{ inventory_hostname }}
+          Commit Information:
+          {% for line in (commit_output.stdout[0] | string).split("\n") %}
+          {{ line }}
+          {% endfor %}
+
+
+
+    - name: Display commit information as list using loop
+      debug:
+        msg: |
+          {% for item in commit_output.stdout %}
+          - {{ item }}
+          {% endfor %}
+
+    - name: Set commit information into a structured list
+      set_fact:
+        commit_info_list: "{{ commit_output.stdout[0].splitlines() }}"
+
+    - name: Display structured commit information list
+      debug:
+        var: commit_info_list[0]
