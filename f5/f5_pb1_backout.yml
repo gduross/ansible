@@ -6,9 +6,9 @@
 
   vars:
     provider:
-      password: labpw1!0
+      password: "password"
       server: 10.0.40.51
-      user: admin
+      user: "user":
       validate_certs: no
       server_port: 443
 

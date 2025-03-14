@@ -1,8 +1,8 @@
 - hosts: localhost
   vars:
     host: "10.0.0.1"
-    username: "admin"
-    password: "percypatrick"
+    username: "username"
+    password: "password"
     vdom: "root"
     ssl_verify: "False"
 
