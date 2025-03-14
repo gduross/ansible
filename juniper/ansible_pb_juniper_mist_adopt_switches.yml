@@ -1,5 +1,5 @@
 ---
-- name: Configure Juniper Device with SSH and User Authentication
+- name: Adopt Juniper Switches into Mist
   hosts: all
   gather_facts: no
   connection: netconf
