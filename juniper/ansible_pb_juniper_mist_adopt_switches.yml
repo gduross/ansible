@@ -1,0 +1,19 @@
+---
+- name: Configure Juniper Device with SSH and User Authentication
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Configure system settings
+      junipernetworks.junos.junos_config:
+        lines:
+          - set system services ssh protocol-version v2
+          - set system authentication-order password
+          - set system login user mist class super-user
+          - set system login user mist authentication encrypted-password {{ mist_authentification_encrypted-password }}
+          - set system login user mist authentication ssh-rsa "ssh-rsa {{ mist_authentification_ssh-rsa }}"
+          - set system services outbound-ssh client mist device-id {{ mist_device-id }}
+          - set system services outbound-ssh client mist secret {{ mist_secret }}
+          - set system services outbound-ssh client mist services netconf keep-alive retry 12 timeout 5
+          - set system services outbound-ssh client mist oc-term.ac2.mist.com port 2200 timeout 60 retry 1000
