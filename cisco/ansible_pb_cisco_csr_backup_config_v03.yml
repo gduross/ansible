@@ -1,6 +1,6 @@
 ---
-- name: BACKUP ROUTER CONFIGURATIONS
-  hosts: cisco_sandbox_csr
+- name: BACKUP CISCO CSR-1000v CONFIGURATIONS
+  hosts: all
   connection: network_cli
   gather_facts: no
 
