@@ -10,3 +10,10 @@
       junipernetworks.junos.junos_config:
         lines:
         - set groups vpn666 policy-options policy-statement VPN666 from route-filter 10.0.50.0/24 orlonger accept
+
+
+#------------------------------------------
+# Validated working CLI
+# ansible-playbook ansible_pb_juniper_vmx_add_route-filter.yml -i /etc/ansible/inventory06.yml -l juniper_devices6 
+# 2/21/2026
+# -----------------------------------------
