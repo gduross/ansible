@@ -1,0 +1,11 @@
+---
+- name: Set ArubaOS-CX Hostname
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Configure hostname
+      arubanetworks.aoscx.aoscx_config:
+        lines:
+          - hostname arubasw1
+        save_when: modified
