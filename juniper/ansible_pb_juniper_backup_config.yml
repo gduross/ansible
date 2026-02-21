@@ -21,3 +21,9 @@
         backup_options:
           filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
           dir_path: /etc/ansible/backups/{{ date }}
+
+#------------------------------------------
+# Validated working CLI
+# ansible-playbook ansible_pb_juniper_show_version.yml -i /etc/ansible/inventory06.yml -l juniper_devices6
+# 2/20/2026
+# -----------------------------------------
