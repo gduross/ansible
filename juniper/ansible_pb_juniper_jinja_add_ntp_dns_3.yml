@@ -1,0 +1,31 @@
+---
+- name: Configure NTP and DNS on Juniper Devices (NETCONF + Junos collection)
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Generate DNS/NTP configuration from Jinja2 template (on controller)
+      ansible.builtin.template:
+        src: ntp_dns.j2
+        dest: "/tmp/dns_ntp_{{ inventory_hostname }}.set"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Load DNS/NTP configuration (merge) from set-format file
+      junipernetworks.junos.junos_config:
+        src: "/tmp/dns_ntp_{{ inventory_hostname }}.set"
+        src_format: set
+        update: merge
+        comment: "DNS/NTP via Ansible"
+
+    - name: Verify DNS and NTP configuration
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show configuration system name-server"
+          - "show configuration system ntp"
+      register: dns_ntp_verify
+
+    - name: Print verification output
+      ansible.builtin.debug:
+        var: dns_ntp_verify.stdout_lines
