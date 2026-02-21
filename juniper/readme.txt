@@ -12,3 +12,7 @@ Note:
 ----------------------------------------------
 When making changes from Ansible, the playbook status may be successful, but if no change (already made) on the Juniper config, the commit history will not show a change.
 
+
+Log:
+----------------------------------------------
+2/21/2026 - All playbooks in Juniper folder updated and or validated. Obsolete playbooks removed.
