@@ -1,0 +1,30 @@
+---
+- name: Configure Syslog Server on Juniper devices (NETCONF + Junos collection)
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Generate syslog configuration from template (on controller)
+      ansible.builtin.template:
+        src: syslog_config.j2
+        dest: "/tmp/syslog_{{ inventory_hostname }}.set"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Load syslog configuration (merge) from set-format file
+      junipernetworks.junos.junos_config:
+        src: "/tmp/syslog_{{ inventory_hostname }}.set"
+        src_format: set
+        update: merge
+        comment: "Syslog via Ansible"
+
+    - name: Verify syslog config (plain show)
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show configuration system syslog"
+      register: syslog_verify
+
+    - name: Print verification output
+      ansible.builtin.debug:
+        var: syslog_verify.stdout_lines

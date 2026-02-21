@@ -1,0 +1,29 @@
+---
+- name: Configure SNMP on Juniper devices (NETCONF + Junos collection)
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Generate SNMP configuration from template (on controller)
+      ansible.builtin.template:
+        src: snmp_config.j2
+        dest: "/tmp/snmp_{{ inventory_hostname }}.set"
+      delegate_to: localhost
+
+    - name: Load SNMP configuration (merge) from set-format file
+      junipernetworks.junos.junos_config:
+        src: "/tmp/snmp_{{ inventory_hostname }}.set"
+        src_format: set
+        update: merge
+        comment: "SNMP via Ansible"
+
+    - name: Verify SNMP config (plain show)
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show configuration snmp"
+      register: snmp_verify
+
+    - name: Print verification output
+      ansible.builtin.debug:
+        var: snmp_verify.stdout_lines

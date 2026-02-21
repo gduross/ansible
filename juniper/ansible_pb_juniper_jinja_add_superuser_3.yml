@@ -1,0 +1,30 @@
+---
+- name: Add superuser to Juniper devices (NETCONF + Junos collection)
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  tasks:
+    - name: Generate superuser configuration from template (on controller)
+      ansible.builtin.template:
+        src: superuser.j2
+        dest: "/tmp/superuser_{{ inventory_hostname }}.set"
+        mode: "0600"
+      delegate_to: localhost
+
+    - name: Load superuser configuration (merge) from set-format file
+      junipernetworks.junos.junos_config:
+        src: "/tmp/superuser_{{ inventory_hostname }}.set"
+        src_format: set
+        update: merge
+        comment: "Add local superuser via Ansible"
+
+    - name: Verify user exists (plain show)
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show configuration system login user admin"
+      register: user_verify
+
+    - name: Print verification output
+      ansible.builtin.debug:
+        var: user_verify.stdout_lines
