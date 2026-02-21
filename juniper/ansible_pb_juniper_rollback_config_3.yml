@@ -1,0 +1,30 @@
+---
+- name: Roll back Junos configuration
+  hosts: all
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+
+  vars_prompt:
+    - name: rollback_id
+      prompt: "Rollback ID to restore (0-49)"
+      private: no
+
+  vars:
+    ansible_network_os: junos
+
+  tasks:
+    - name: Load rollback {{ rollback_id }} and commit
+      junipernetworks.junos.junos_config:
+        rollback: "{{ rollback_id }}"
+        comment: "Ansible rollback {{ rollback_id }}"
+        update: merge
+
+    - name: Show last commit / confirm
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show system commit | no-more"
+      register: commits
+
+    - name: Print commit output
+      ansible.builtin.debug:
+        var: commits.stdout_lines
