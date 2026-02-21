@@ -1,0 +1,38 @@
+---
+- name: Backup Extreme EXOS configuration to Ansible controller
+  hosts: extreme
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    # Where backups will be stored on the Ansible controller
+    date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+    date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+    backup_dir: "/etc/ansible/backups/{{ date }}"
+
+
+
+
+  tasks:
+    - name: Ensure backup directory exists (on controller)
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Gather EXOS running configuration
+      ansible.netcommon.cli_command:
+        command: "show configuration"
+      register: exos_cfg
+
+    - name: Save configuration to a timestamped file (on controller)
+      ansible.builtin.copy:
+        dest: "{{ backup_dir }}/{{ inventory_hostname }}-{{ lookup('pipe','date +%Y%m%d-%H%M%S') }}.cfg"
+        content: |
+          # Backup from {{ inventory_hostname }}
+          # Collected: {{ lookup('pipe','date -Is') }}
+          {{ exos_cfg.stdout }}
+        mode: "0644"
+      delegate_to: localhost

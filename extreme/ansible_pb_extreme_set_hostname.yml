@@ -1,0 +1,15 @@
+---
+- name: Set hostname on Extreme EXOS switch
+  hosts: extreme
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: community.network.exos
+
+  tasks:
+    - name: Set hostname via SNMP sysName
+      community.network.exos_config:
+        lines:
+          - configure snmp sysName extremesw1
+        save_when: modified
