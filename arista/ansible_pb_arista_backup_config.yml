@@ -1,0 +1,29 @@
+---
+- name: Backup Arista EOS running-config to control node
+  hosts: arista
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: arista.eos.eos
+    date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+    date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+    backup_dir: "/etc/ansible/backups/{{ date }}"
+
+
+
+  tasks:
+    - name: Ensure local backup directory exists
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Backup running-config
+      arista.eos.eos_config:
+        backup: true
+        backup_options:
+          filename: "{{ inventory_hostname }}_running.cfg"
+          dir_path: "{{ backup_dir }}"
