@@ -1,0 +1,16 @@
+---
+- name: Change Juniper Hostname
+  hosts: all
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+
+  vars:
+    ansible_network_os: junipernetworks.junos.junos
+
+  tasks:
+    - name: Set system hostname (merge + commit)
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set system host-name {{ desired_hostname | default(inventory_hostname) }}"
+        update: merge
+        comment: "Ansible: set hostname"
