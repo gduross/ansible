@@ -1,17 +1,20 @@
 ---
-- name: add or remove route filters to a router config.
-  hosts: junosdevices2
+- name: Add or remove route filters to a router config
+  hosts: all
   gather_facts: no
+  connection: ansible.netcommon.netconf
 
-  #Usage:
-  #ansible-playbook junos_add_route_filter.yml -u admin -k -vvv --extra-vars '{"group":"vpn667","action":"delete","device_list":["10.0.50.0/24","10.0.51.0/24","10.0.52.0/24","10.0.53.0/24"]}'
+  # Usage: 
+  # ansible-playbook ansible_pb_juniper_vmx_add_route-filter_2.yml   -i /etc/ansible/inventory06.yml -l juniper_devices6   --extra-vars '{"group":"vpn667","action":"delete","device_list":["10.0.50.0/24","10.0.51.0/24"]}'
+
+  vars:
+    ansible_network_os: junos
 
   tasks:
-
-    - name: add or remove route filters to a router config.
+    - name: Add/remove route-filters
       junipernetworks.junos.junos_config:
         lines:
-        - " {{action}} groups {{ group }} policy-options policy-statement {{ group }} from route-filter {{ item }} orlonger "
-      loop: "{{ device_list }}"
-      loop_control:
-         loop_var: item
+          - "{{ op }} groups {{ group }} policy-options policy-statement {{ group }} from route-filter {{ item }} orlonger"
+        update: merge
+        comment: "Ansible: {{ op }} route-filters for {{ group }}"
+      loop: "{{ prefix_list }}"
