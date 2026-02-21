@@ -13,3 +13,9 @@
       register: backup_junos_location
         #when: ansible_network_os == 'junipernetworks.junos.junos'
       when: ansible_network_os == 'junos'
+
+#------------------------------------------
+# Validated working CLI
+# ansible-playbook ansible_pb_juniper_show_version_2.yml -i /etc/ansible/inventory06.yml -l juniper_devices6
+# 2/20/2026
+# -----------------------------------------
