@@ -14,3 +14,9 @@
    - name: Print version
      debug:
         var=print_output.stdout_lines
+
+#------------------------------------------
+# Validated working CLI
+# ansible-playbook ansible_pb_juniper_vmx_show_version_int.yml -i /etc/ansible/inventory06.yml -l juniper_devices6
+# 2/21/2026
+# -----------------------------------------
