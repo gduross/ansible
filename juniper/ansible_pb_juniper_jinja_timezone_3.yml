@@ -1,0 +1,34 @@
+---
+- name: Configure Time Zone on Juniper Devices (NETCONF + Junos collection)
+  hosts: all
+  gather_facts: no
+  connection: netconf
+
+  # Optional default (override in inventory or -e)
+  vars:
+    timezone: "America/New_York"
+
+  tasks:
+    - name: Generate timezone configuration from Jinja2 template (on controller)
+      ansible.builtin.template:
+        src: timezone.j2
+        dest: "/tmp/timezone_{{ inventory_hostname }}.set"
+        mode: "0644"
+      delegate_to: localhost
+
+    - name: Load timezone configuration (merge) from set-format file
+      junipernetworks.junos.junos_config:
+        src: "/tmp/timezone_{{ inventory_hostname }}.set"
+        src_format: set
+        update: merge
+        comment: "Timezone via Ansible"
+
+    - name: Verify timezone configuration
+      junipernetworks.junos.junos_command:
+        commands:
+          - "show configuration system time-zone"
+      register: tz_verify
+
+    - name: Print verification output
+      ansible.builtin.debug:
+        var: tz_verify.stdout_lines
