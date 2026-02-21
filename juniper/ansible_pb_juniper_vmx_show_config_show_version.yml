@@ -27,5 +27,9 @@
    - debug:
        var: result
 
-
+#------------------------------------------
+# Validated working CLI
+# ansible-playbook ansible_pb_juniper_vmx_show_config_show_version.yml -i /etc/ansible/inventory06.yml -l juniper_devices6
+# 2/21/2026
+# -----------------------------------------
 
