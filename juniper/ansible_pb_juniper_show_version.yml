@@ -11,3 +11,5 @@
     - name: Print version
       ansible.builtin.debug:
         var: junos.version
+
+# Validated 2/21/2026
