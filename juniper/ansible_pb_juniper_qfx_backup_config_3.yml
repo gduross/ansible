@@ -1,0 +1,20 @@
+---
+- name: Backup Junos configuration
+  hosts: all
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+
+  vars:
+    ansible_network_os: junos
+
+  tasks:
+    - name: Backup current device config
+      junipernetworks.junos.junos_config:
+        backup: yes
+        backup_options:
+          dir_path: /var/tmp/backup
+      register: backup_result
+
+    - name: Show where backup was written
+      ansible.builtin.debug:
+        var: backup_result.backup_path
