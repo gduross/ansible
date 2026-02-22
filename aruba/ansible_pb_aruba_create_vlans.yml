@@ -1,0 +1,20 @@
+---
+- name: Create VLANs on ArubaOS-CX switches
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: arubanetworks.aoscx.aoscx
+
+  tasks:
+    - name: Configure VLANs 10/20/30 with names
+      arubanetworks.aoscx.aoscx_config:
+        lines:
+          - vlan 10
+          - name VLAN10
+          - vlan 20
+          - name VLAN20
+          - vlan 30
+          - name VLAN30
+        save_when: modified
