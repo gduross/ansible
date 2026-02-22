@@ -1,6 +1,6 @@
 ---
 - name: Add Vlans to switch pair.
-  hosts: switches
+  hosts: all
   connection: network_cli
   gather_facts: no
 
