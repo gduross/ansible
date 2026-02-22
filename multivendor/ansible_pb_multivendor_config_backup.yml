@@ -1,0 +1,59 @@
+---
+- name: Multi-vendor network backups (Cisco / Juniper / Arista / Aruba / Extreme)
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+    date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+    backup_dir: "/etc/ansible/backups/{{ date }}"
+
+  pre_tasks:
+    - name: Ensure local backup directory exists
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+      run_once: true
+      delegate_to: localhost
+
+  tasks:
+    - name: Arista Obtain Info - Backup running-config
+      when: inventory_hostname in groups.get('arista', [])
+      block:
+        - name: Arista Collect running-config
+          arista.eos.eos_config:
+            backup: true
+            backup_options:
+              filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+              dir_path: "{{ backup_dir }}"
+
+    - name: Arista Backup running-config
+      when: inventory_hostname in groups.get('arista', [])
+      arista.eos.eos_config:
+        backup: true
+        backup_options:
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+          dir_path: "{{ backup_dir }}"
+
+
+
+    - name: Juniper Obtain Info - Backup running-config
+      when: inventory_hostname in groups.get('juniper', [])
+      block:
+        - name: Juniper Collect running-config
+          junipernetworks.junos.junos_config:
+            backup: true
+            backup_options:
+              filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+              dir_path: "{{ backup_dir }}"
+
+    - name: Juniper Backup running-config
+      when: inventory_hostname in groups.get('juniper', [])
+      junipernetworks.junos.junos_config:
+        backup: true
+        backup_options:
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+          dir_path: "{{ backup_dir }}"
+            

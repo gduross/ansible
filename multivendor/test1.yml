@@ -1,0 +1,152 @@
+---
+- name: Multi-vendor network backups (Cisco / Juniper / Arista / Aruba / Extreme)
+  hosts: all
+  gather_facts: no
+
+  vars:
+    backup_root: "./backups"
+    run_ts: "{{ lookup('pipe','date +%Y%m%d-%H%M%S') }}"
+    run_dir: "{{ backup_root }}/{{ run_ts }}"
+
+  pre_tasks:
+    - name: Create backup run directory on control node
+      ansible.builtin.file:
+        path: "{{ run_dir }}"
+        state: directory
+        mode: "0755"
+      run_once: true
+      delegate_to: localhost
+
+  tasks:
+    # -------------------------
+    # Cisco IOS
+    # -------------------------
+    - name: Cisco - backup running-config
+      when: inventory_hostname in groups.get('cisco', [])
+      block:
+        - name: Collect running-config
+          cisco.ios.ios_command:
+            commands:
+              - show running-config
+          register: cisco_out
+
+        - name: Write Cisco backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_cisco_running.cfg"
+            content: "{{ cisco_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # Juniper Junos
+    # -------------------------
+    - name: Juniper - backup configuration (set format)
+      when: inventory_hostname in groups.get('juniper', [])
+      block:
+        - name: Collect config (display set)
+          juniper.device.command:
+            commands:
+              - show configuration | display set | no-more
+          register: jun_out
+
+        - name: Write Juniper backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_juniper_display_set.conf"
+            content: "{{ jun_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # Arista EOS
+    # -------------------------
+    - name: Arista - backup running-config
+      when: inventory_hostname in groups.get('arista', [])
+      block:
+        - name: Collect running-config
+          arista.eos.eos_command:
+            commands:
+              - show running-config
+          register: arista_out
+
+        - name: Write Arista backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_arista_running.cfg"
+            content: "{{ arista_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # ArubaOS-CX
+    # -------------------------
+    - name: Aruba CX - backup running-config
+      when: inventory_hostname in groups.get('aruba_cx', [])
+      block:
+        - name: Collect running-config
+          arubanetworks.aoscx.aoscx_command:
+            commands:
+              - show running-config
+          register: aruba_cx_out
+
+        - name: Write Aruba CX backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_aruba_cx_running.cfg"
+            content: "{{ aruba_cx_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # ArubaOS-Switch (ProCurve)
+    # -------------------------
+    - name: ArubaOS-Switch - backup running-config
+      when: inventory_hostname in groups.get('aruba_procurve', [])
+      block:
+        - name: Collect running-config
+          arubanetworks.arubaoss.arubaoss_command:
+            commands:
+              - show running-config
+          register: aruba_os_out
+
+        - name: Write ArubaOS-Switch backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_aruba_os_running.cfg"
+            content: "{{ aruba_os_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # Extreme EXOS
+    # -------------------------
+    - name: Extreme EXOS - backup config
+      when: inventory_hostname in groups.get('extreme_exos', [])
+      block:
+        - name: Collect config
+          community.network.exos_command:
+            commands:
+              - show configuration
+          register: exos_out
+
+        - name: Write Extreme EXOS backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_extreme_exos_config.txt"
+            content: "{{ exos_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
+
+    # -------------------------
+    # Extreme VOSS / Fabric Engine
+    # -------------------------
+    - name: Extreme VOSS - backup config
+      when: inventory_hostname in groups.get('extreme_voss', [])
+      block:
+        - name: Collect config
+          community.network.voss_command:
+            commands:
+              - show running-config
+          register: voss_out
+
+        - name: Write Extreme VOSS backup file
+          ansible.builtin.copy:
+            dest: "{{ run_dir }}/{{ inventory_hostname }}_extreme_voss_running.cfg"
+            content: "{{ voss_out.stdout[0] }}\n"
+            mode: "0644"
+          delegate_to: localhost
