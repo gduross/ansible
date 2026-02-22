@@ -1,0 +1,30 @@
+---
+- name: Create VLANs on Extreme EXOS
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: community.network.exos
+
+  tasks:
+    - name: Create VLAN 10
+      community.network.exos_config:
+        lines:
+          - create vlan VLAN10 tag 10
+          - configure vlan VLAN10 tag 10
+        save_when: modified
+
+    - name: Create VLAN 20
+      community.network.exos_config:
+        lines:
+          - create vlan VLAN20 tag 20
+          - configure vlan VLAN20 tag 20
+        save_when: modified
+
+    - name: Create VLAN 30
+      community.network.exos_config:
+        lines:
+          - create vlan VLAN30 tag 30
+          - configure vlan VLAN30 tag 30
+        save_when: modified
