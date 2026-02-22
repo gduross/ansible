@@ -1,0 +1,20 @@
+---
+- name: Create VLANs using structured module
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: arista.eos.eos
+
+  tasks:
+    - name: Configure VLANs
+      arista.eos.eos_vlans:
+        config:
+          - vlan_id: 10
+            name: VLAN10
+          - vlan_id: 20
+            name: VLAN20
+          - vlan_id: 30
+            name: VLAN30
+        state: merged
