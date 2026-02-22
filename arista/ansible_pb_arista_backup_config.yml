@@ -25,5 +25,5 @@
       arista.eos.eos_config:
         backup: true
         backup_options:
-          filename: "{{ inventory_hostname }}_running.cfg"
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
           dir_path: "{{ backup_dir }}"
