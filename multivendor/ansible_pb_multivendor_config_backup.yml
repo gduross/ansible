@@ -1,5 +1,6 @@
 ---
-- name: Multi-vendor network backups (Cisco / Juniper / Arista / Aruba / Extreme)
+# PLAY 1: Vendors that use network_cli
+- name: Multi-vendor backups (network_cli)
   hosts: all
   gather_facts: no
   connection: network_cli
@@ -10,26 +11,17 @@
     backup_dir: "/etc/ansible/backups/{{ date }}"
 
   pre_tasks:
-    - name: Ensure local backup directory exists
+    - name: Ensure local backup directory exists (control node)
       ansible.builtin.file:
         path: "{{ backup_dir }}"
         state: directory
         mode: "0755"
-      run_once: true
       delegate_to: localhost
+      run_once: true
+      become: false
 
   tasks:
-    - name: Arista Obtain Info - Backup running-config
-      when: inventory_hostname in groups.get('arista', [])
-      block:
-        - name: Arista Collect running-config
-          arista.eos.eos_config:
-            backup: true
-            backup_options:
-              filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
-              dir_path: "{{ backup_dir }}"
-
-    - name: Arista Backup running-config
+    - name: Arista - Backup running-config
       when: inventory_hostname in groups.get('arista', [])
       arista.eos.eos_config:
         backup: true
@@ -37,23 +29,50 @@
           filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
           dir_path: "{{ backup_dir }}"
 
-
-
-    - name: Juniper Obtain Info - Backup running-config
-      when: inventory_hostname in groups.get('juniper', [])
-      block:
-        - name: Juniper Collect running-config
-          junipernetworks.junos.junos_config:
-            backup: true
-            backup_options:
-              filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
-              dir_path: "{{ backup_dir }}"
-
-    - name: Juniper Backup running-config
-      when: inventory_hostname in groups.get('juniper', [])
-      junipernetworks.junos.junos_config:
+    - name: Cisco IOS (vios_l2) - Backup running-config
+      when: inventory_hostname in groups.get('cisco', [])
+      cisco.ios.ios_config:
         backup: true
         backup_options:
           filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
           dir_path: "{{ backup_dir }}"
-            
+
+
+
+
+    # (Add Cisco/Aruba/Extreme tasks here if you want)
+
+
+# PLAY 2: Juniper devices via NETCONF (this is the important part)
+- name: Juniper backups (NETCONF)
+  hosts: juniper_devices
+  gather_facts: no
+    #connection: netconf
+  collections:
+    - junipernetworks.junos
+
+  vars:
+    date_time: "{{ lookup('pipe', 'date +%Y%m%d_%H%M') }}"
+    date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+    backup_dir: "/etc/ansible/backups/{{ date }}"
+
+  pre_tasks:
+    - name: Ensure local backup directory exists (control node)
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      run_once: true
+      become: false
+
+        #- name: Quick NETCONF sanity check (facts)
+        # junos_facts:
+
+  tasks:
+    - name: Juniper - Backup configuration
+      junos_config:
+        backup: true
+        backup_options:
+          filename: "{{ inventory_hostname }}_{{ date_time }}.cfg"
+          dir_path: "{{ backup_dir }}"
