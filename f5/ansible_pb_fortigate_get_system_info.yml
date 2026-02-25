@@ -1,0 +1,39 @@
+---
+- name: F5 BIG-IP - gather and display basic device info (local connection)
+  hosts: f5
+  gather_facts: no
+  collections:
+    - f5networks.f5_modules
+
+  vars:
+    provider:
+      server: "{{ ansible_host }}"
+      user: "{{ ansible_user }}"
+      password: "{{ ansible_password }}"
+      server_port: 443
+      validate_certs: no
+
+  tasks:
+    - name: Gather BIG-IP facts
+      f5networks.f5_modules.bigip_device_info:
+        provider: "{{ provider }}"
+        gather_subset:
+          - system-info
+          - devices
+          - software-volumes
+          - interfaces
+          - vlans
+      delegate_to: localhost
+      register: bigip_info
+
+
+
+    - name: Show a quick summary
+      ansible.builtin.debug:
+        msg:
+          - "Hostname: {{ bigip_info.ansible_facts.ansible_net_devices[0].hostname | default('unknown') }}"
+          - "Platform: {{ bigip_info.ansible_facts.ansible_net_devices[0].marketing_name | default('unknown') }}"
+          - "Version:  {{ bigip_info.ansible_facts.ansible_net_devices[0].software_version | default('unknown') }}"
+          - "Build:    {{ bigip_info.ansible_facts.ansible_net_devices[0].build | default('unknown') }}"
+          - "Mgmt IP:  {{ bigip_info.ansible_facts.ansible_net_devices[0].management_address | default('unknown') }}"
+      delegate_to: localhost
