@@ -1,1 +1,1 @@
-CentOS playbooks for Ansible.
+Linux playbooks for Ansible.

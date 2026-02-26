@@ -1,6 +1,6 @@
 ---
   - name: Get free memory from linux servers.
-    hosts: lab_servers
+    hosts: all
 
     tasks:
 
@@ -12,3 +12,6 @@
 
     - name: Display results of 'date' command.  
       debug: msg="{{results.stdout}}"
+
+
+# Validated: 2/26/2026

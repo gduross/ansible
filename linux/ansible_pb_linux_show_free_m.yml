@@ -1,6 +1,6 @@
 ---
 - name: Get free memory from linux servers
-  hosts: lab_servers
+  hosts: all
   tasks:
   - name: Execute 'free -m'  using the shell module
     shell: 'free -m'
@@ -10,3 +10,5 @@
     debug:
       var: results
 
+
+# Validated: 2/26/2026
