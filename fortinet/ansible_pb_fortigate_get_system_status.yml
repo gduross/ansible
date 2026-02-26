@@ -1,28 +1,18 @@
 ---
-- name: Get Fortigate system status information.
-  hosts: fortigate
-  connection: httpapi
-  collections:
-  - fortinet.fortios
+- name: Get FortiGate system status via SSH CLI
+  hosts: all
+  gather_facts: no
+
   vars:
-   vdom: "root"
-   ansible_httpapi_use_ssl: no
-   ansible_httpapi_validate_certs: no
-   ansible_httpapi_port: 443
+    ansible_connection: ssh
+    ansible_shell_type: sh
+
   tasks:
+    - name: Get system status (CLI)
+      ansible.builtin.raw: |
+        get system status
+      register: system_status
 
-  - name: Get system status
-    fortios_monitor_fact:
-       vdom: ""
-       formatters:
-            - model_name
-       filters:
-            - model_name==FortiGate
-       selector: 'system_status'
-
-    register: system_status
-
-  - name: Show system status
-    debug:
-      var: system_status
-
+    - name: Show system status output
+      debug:
+        var: system_status.stdout_lines
