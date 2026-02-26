@@ -1,0 +1,30 @@
+---
+- name: FortiGate - simple system status + interface summary
+  hosts: fortigate1
+  gather_facts: false
+  connection: httpapi
+  collections:
+    - fortinet.fortios
+
+  tasks:
+    - name: Get FortiGate system status (monitor)
+      fortinet.fortios.fortios_monitor_fact:
+        vdom: "{{ vdom | default('root') }}"
+        selector: system_status
+      register: sys
+
+    - name: Get FortiGate interface list (monitor)
+      fortinet.fortios.fortios_monitor_fact:
+        vdom: "{{ vdom | default('root') }}"
+        selector: system_interface
+      register: ifs
+
+    - name: Show quick summary
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }} ({{ ansible_host }})"
+          - "VDOM: {{ vdom | default('root') }}"
+          - "Version: {{ sys.meta.results.version | default('n/a') }}"
+          - "Build: {{ sys.meta.results.build | default('n/a') }}"
+          - "Serial: {{ sys.meta.results.serial | default('n/a') }}"
+          - "Interfaces returned: {{ (ifs.meta.results | default([])) | length }}"
