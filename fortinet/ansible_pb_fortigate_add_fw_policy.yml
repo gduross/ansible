@@ -1,12 +1,11 @@
-- collections:
-  - fortinet.fortios
+---
+- name: Get Fortigate add policy
+  hosts: fortigate1
+  gather_facts: false
   connection: httpapi
-  hosts: fortigate
-  vars:
-    ansible_httpapi_port: 443
-    ansible_httpapi_use_ssl: false
-    ansible_httpapi_validate_certs: false
-    vdom: root
+  collections:
+    - fortinet.fortios
+
   tasks:
   - name: fortios_firewall_policy
     fortios_firewall_policy:
