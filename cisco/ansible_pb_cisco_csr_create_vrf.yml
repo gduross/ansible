@@ -1,6 +1,6 @@
 ---
 - name: Add VRF to a CSR1000v router.
-  hosts: csr1000vlab01
+  hosts: all
   connection: network_cli
   gather_facts: no
 
@@ -10,4 +10,4 @@
         name: act202
         description: act202
         interfaces:
-          - GigabitEthernet2.202
+          - GigabitEthernet2
