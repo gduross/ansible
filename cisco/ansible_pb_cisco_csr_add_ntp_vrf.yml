@@ -1,30 +1,15 @@
 ---
-- hosts: csr1000vlab01
+- name: Configure NTP (VRF mgmt)
+  hosts: all
+  connection: network_cli
   gather_facts: no
 
   tasks:
-  #- name: configure interface
-  #  ios_interface:
-  #    name: GigabitEthernet4
-  #    enabled: false
-
-  # Set new NTP configuration
-  # - name: configure NTP
-  - cisco.ios.ios_ntp:
-     server: 10.0.30.1
-     source_int: gigabitethernet 1
-     acl: "22"
-     logging: true
-    #key_id: 10
-    #auth_key: 15435A030726242723273C21181319000A
-    #auth: true
-     state: present
-
-  - name: Create an access-list
-    ios_config:
-     lines: access-list 22 permit any log
-
-  - name: Customer NTP vrf config
-    ios_config:
-     lines: ntp server vrf mgmt 10.0.30.1
-
+    - name: Configure NTP + ACL + VRF server
+      cisco.ios.ios_config:
+        lines:
+          - access-list 22 permit any log
+          - ntp source GigabitEthernet1
+          - ntp logging
+          - ntp access-group peer 22
+          - ntp server vrf mgmt 10.0.30.1
