@@ -1,14 +1,17 @@
 ---
 - name: Syslog Configuration
-  hosts: csr1000vlab01
+  hosts: all
   connection: network_cli
   gather_facts: no
 
   tasks:
-
-    - name: configure logging for syslog server host
-      ios_logging:
-        dest: host
-        name: 10.0.0.208
-        level: informational
-        state: present
+    - name: Configure syslog settings (global)
+      cisco.ios.ios_logging_global:
+        config:
+          hosts:
+            - hostname: 10.0.0.236
+              transport:
+                udp:
+                  port: 514
+          trap: informational
+        state: merged
