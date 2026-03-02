@@ -1,0 +1,46 @@
+---
+- name: Set Junos hostname to match Ansible inventory hostname
+  hosts: junlab01
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+  collections:
+    - junipernetworks.junos
+
+  vars:
+    desired_hostname: "{{ inventory_hostname }}"
+
+  tasks:
+    - name: Show current hostname (operational)
+      junos_command:
+        commands:
+          - "show system information | match Hostname"
+      register: before_host
+
+    - name: Configure system host-name and COMMIT (confirmed + auto-confirm)
+      junos_config:
+        lines:
+          - "set system host-name {{ desired_hostname }}"
+        comment: "Set hostname via Ansible to {{ desired_hostname }}"
+        confirm: 2
+        confirm_commit: true
+      register: hostname_push
+
+    - name: Show hostname from config (post-change)
+      junos_command:
+        commands:
+          - "show configuration system | match host-name"
+      register: after_cfg
+
+    - name: Show hostname (operational) post-change
+      junos_command:
+        commands:
+          - "show system information | match Hostname"
+      register: after_host
+
+    - name: Summary
+      debug:
+        msg:
+          - "BEFORE: {{ before_host.stdout[0] | default('N/A') }}"
+          - "PUSH changed={{ hostname_push.changed }}"
+          - "CONFIG: {{ after_cfg.stdout[0] | default('N/A') }}"
+          - "AFTER:  {{ after_host.stdout[0] | default('N/A') }}"

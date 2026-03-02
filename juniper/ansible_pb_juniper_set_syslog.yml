@@ -1,0 +1,33 @@
+---
+- name: Configure remote syslog (mgmt routing-instance) on Junos
+  hosts: all
+  gather_facts: no
+  connection: ansible.netcommon.netconf
+  collections:
+    - junipernetworks.junos
+
+  vars:
+    syslog_host: "10.0.0.236"
+    syslog_source_ip: "{{ ansible_host | default(inventory_hostname) }}"
+    syslog_ri: "mgmt_junos"
+
+  tasks:
+    - name: Load + commit syslog config (using check_commit)
+      junos_config:
+        lines:
+          - "set system syslog host {{ syslog_host }} any any"
+          - "set system syslog host {{ syslog_host }} source-address {{ syslog_source_ip }}"
+          - "set system syslog host {{ syslog_host }} routing-instance {{ syslog_ri }}"
+        comment: "Remote syslog via mgmt routing-instance (Ansible)"
+        check_commit: true
+      register: syslog_push
+
+        #- name: Verify syslog config on device
+        #junos_command:
+        # commands:
+        #  - "show configuration system syslog | display set | match \"host {{ syslog_host }}\""
+        #register: syslog_verify
+
+        #- name: Show verification output
+        #debug:
+        #var: syslog_verify.stdout_lines
